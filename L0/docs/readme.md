@@ -58,9 +58,9 @@ go run main.go
 
 5. **Open the web interface**
 
-Navigate to `frontend/index.html` in your browser
-6. **Send test order message**
+Navigate to folder `frontend` and open `index.html` in your browser
 
+6. **Send test order message**
 ```powershell
 # On Windows
 cd kafka-producer-script
