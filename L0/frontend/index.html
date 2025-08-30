@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Order</title>
+<style>
+  body{
+    font-family:sans-serif;
+    margin:12px auto; 
+    width: 60%
+  }
+  input{
+    padding:6px 8px;
+    width:340px;
+    height: 44px;
+  }
+
+  .button-9 {
+    appearance: button;
+    backface-visibility: hidden;
+    background-color: #405cf5;
+    border-radius: 6px;
+    border-width: 0;
+    box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 1px 1px 0;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    font-family: -apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif;
+    font-size: 100%;
+    height: 44px;
+    line-height: 1.15;
+    margin: 12px 0 0;
+    outline: none;
+    overflow: hidden;
+    padding: 0 25px;
+    position: relative;
+    text-align: center;
+    text-transform: none;
+    transform: translateZ(0);
+    transition: all .2s,box-shadow .08s ease-in;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: 120px;
+  }
+
+  .button-9:disabled {
+      cursor: default;
+  }
+
+  .button-9:focus {
+      box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset, rgba(50, 50, 93, .2) 0 6px 15px 0, rgba(0, 0, 0, .1) 0 2px 2px 0, rgba(50, 151, 211, .3) 0 0 0 4px;
+  }
+  h2{
+    margin-top:32px
+  }
+  table{
+    border-collapse:collapse;
+    width:100%;
+    margin-top:8px
+  }
+  th,td{
+    border:1px solid #ccc;
+    padding:6px 10px
+  }
+  th{
+    background:#f2f2f2;
+    font-weight:600;
+    text-align:left;
+    width: 150px;
+  }
+  #error{color:#d8000c;margin-top:12px}
+</style>
+</head>
+<body>
+  <h1>Order</h1>
+
+  <input id="orderId" placeholder="Order UUID">
+  <button class="button-9" role="button" id="loadBtn">Load</button>
+  <div id="error"></div>
+
+  <h2>Order</h2>
+  <table id="orderTable"></table>
+
+  <h2>Delivery</h2>
+  <table id="deliveryTable"></table>
+
+  <h2>Payment</h2>
+  <table id="paymentTable"></table>
+
+  <h2>Items</h2>
+  <table id="itemsTable"></table>
+
+<script>
+document.getElementById('loadBtn').addEventListener('click', fetchOrder);
+
+async function fetchOrder() {
+  clearTables();
+  const id = document.getElementById('orderId').value.trim();
+  if (!id) return;
+
+  try {
+    const res  = await fetch(`http://localhost:8080/order/${id}`);
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+
+    fillOrder(data);
+    fillDelivery(data.delivery);
+    fillPayment(data.payment);
+    fillItems(data.items || []);
+    document.getElementById('error').textContent = '';
+  } catch (e) {
+    document.getElementById('error').textContent = e.message;
+  }
+}
+
+function clearTables() {
+  ['orderTable','deliveryTable','paymentTable','itemsTable']
+    .forEach(id => document.getElementById(id).innerHTML = '');
+}
+
+function fillOrder(o) {
+  addRows('orderTable', {
+    'Order UID':       o.order_uid,
+    'Track Number':    o.track_number,
+    'Entry':           o.entry,
+    'Locale':          o.locale,
+    'Customer ID':     o.customer_id,
+    'Delivery Service':o.delivery_service,
+    'Shard Key':       o.shard_key,
+    'SM ID':           o.sm_id,
+    'Date Created':    o.date_created,
+    'Oof Shard':       o.oof_shard
+  });
+}
+
+function fillDelivery(d) {
+  if (!d) return;
+  addRows('deliveryTable', {
+    'Name':    d.name,
+    'Phone':   d.phone,
+    'Zip':     d.zip,
+    'City':    d.city,
+    'Address': d.address,
+    'Region':  d.region,
+    'Email':   d.email
+  });
+}
+
+function fillPayment(p) {
+  if (!p) return;
+  addRows('paymentTable', {
+    'Transaction':  p.transaction,
+    'Currency':     p.currency,
+    'Provider':     p.provider,
+    'Amount':       p.amount,
+    'Payment DT':   p.payment_dt,
+    'Bank':         p.bank,
+    'Delivery Cost':p.delivery_cost,
+    'Goods Total':  p.goods_total,
+    'Custom Fee':   p.custom_fee
+  });
+}
+
+function fillItems(items) {
+  const table = document.getElementById('itemsTable');
+  if (!items.length) return;
+
+  const head = document.createElement('tr');
+  ['Chrt ID','Track Number','Price','RID','Name','Sale','Size',
+   'Total Price','NM ID','Brand','Status']
+   .forEach(text => {
+     const th = document.createElement('th');
+     th.textContent = text;
+     head.appendChild(th);
+   });
+  table.appendChild(head);
+
+  items.forEach(item => {
+    const tr = document.createElement('tr');
+    [item.chrt_id, item.track_number, item.price, item.rid, item.name, item.sale,
+     item.size, item.total_price, item.nm_id, item.brand, item.status]
+     .forEach(val => {
+       const td = document.createElement('td');
+       td.textContent = val;
+       tr.appendChild(td);
+     });
+    table.appendChild(tr);
+  });
+}
+
+function addRows(tableId, obj) {
+  const table = document.getElementById(tableId);
+  Object.entries(obj).forEach(([k,v]) => {
+    const tr  = document.createElement('tr');
+    const th  = document.createElement('th'); th.textContent = k;
+    const td  = document.createElement('td'); td.textContent = v;
+    tr.appendChild(th); 
+    tr.appendChild(td);
+    table.appendChild(tr);
+  });
+}
+</script>
+</body>
+</html>
