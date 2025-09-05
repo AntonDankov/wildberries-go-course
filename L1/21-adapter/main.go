@@ -21,6 +21,9 @@ func (audioSystem *AudioSystemWithFormat) playSound(filename string, format stri
 	fmt.Printf("Playing format %s with file: %s\n", format, filename)
 }
 
+// Адаптер позволяет использовать уже существующий функционал, не внося изменения в него
+// (также может быть + если это библиотека, к которой нет доступа)
+// Минусы: добавляет еще слой абстрации, что усложняет код
 type AudioSystemWithFormatAdapter struct {
 	audioSystem *AudioSystemWithFormat
 }
