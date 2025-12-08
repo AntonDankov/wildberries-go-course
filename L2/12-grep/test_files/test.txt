@@ -1,0 +1,10 @@
+Line 1: Hello world
+Line 2: This is a TEST line
+Line 3: Grep example with test
+Line 4: Another line
+Line 5: test in lowercase
+Line 6: No match here
+Line 7: Duplicate TEST line
+Line 8: Final test at end
+Line 9: Post-test line
+Line 10: End of file
