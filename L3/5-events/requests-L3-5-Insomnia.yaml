@@ -1,0 +1,144 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Scratch Pad
+meta:
+  id: wrk_scratchpad
+  created: 1756226975695
+  modified: 1756226975695
+  description: ""
+collection:
+  - url: localhost:8080/events/1/book
+    name: Book the event
+    meta:
+      id: req_f1c1a9afcd344af8a813319abbe5efb5
+      created: 1756227001250
+      modified: 1769096440373
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001250
+    method: POST
+    body:
+      mimeType: application/json
+      text: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/events
+    name: Create event
+    meta:
+      id: req_4a4513b35d484df8917bd9c0da26587e
+      created: 1764870875144
+      modified: 1769095129691
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001350
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"name": "test_event1",
+        	"seats": 3,
+        	"book_second_max_time": 60
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/events/1
+    name: Get events
+    meta:
+      id: req_669578b6e0bd4ea4abdf87ace002dc8d
+      created: 1766444434863
+      modified: 1769096591219
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001246.875
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters:
+      - name: start_date
+        value: 2025-12-22
+        description: ""
+        disabled: false
+      - name: end_date
+        value: 2025-12-23
+        description: ""
+        disabled: false
+      - name: type
+        value: day
+        description: ""
+        disabled: false
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/events/15/confirm
+    name: Confirm booking
+    meta:
+      id: req_7633429ba7b948349acd80a42d06e285
+      created: 1769095554242
+      modified: 1769096779153
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001248.4375
+    method: POST
+    body:
+      mimeType: application/json
+      text: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1756226988527
+    modified: 1756226988527
+environments:
+  name: Base Environment
+  meta:
+    id: env_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1756226988526
+    modified: 1756226988526
+    isPrivate: false

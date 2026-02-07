@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS analytics (
+  id BIGSERIAL PRIMARY KEY,
+  user_agent TEXT NOT NULL,
+  visit_time TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  short_url_id BIGINT  REFERENCES short_url(id) ON DELETE CASCADE
+);

@@ -1,0 +1,117 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Scratch Pad
+meta:
+  id: wrk_scratchpad
+  created: 1756226975695
+  modified: 1756226975695
+  description: ""
+collection:
+  - url: localhost:8080/notify/13
+    name: Get status
+    meta:
+      id: req_f1c1a9afcd344af8a813319abbe5efb5
+      created: 1756227001250
+      modified: 1765806059695
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001250
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters:
+      - name: user_id
+        value: "1"
+        description: ""
+        disabled: false
+      - name: date
+        value: 2026-01-03
+        description: ""
+        disabled: false
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/notify
+    name: Create
+    meta:
+      id: req_4a4513b35d484df8917bd9c0da26587e
+      created: 1764870875144
+      modified: 1765805716839
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001350
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "send_at": "2025-12-15T16:36:00+03:00",
+          "text": "This is alert"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/notify/8
+    name: Delete
+    meta:
+      id: req_2cb5b42a280d483a85bdf7e4d5062a7e
+      created: 1765195626029
+      modified: 1765651332558
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001206.25
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        		"id": 0,
+        		"user_id": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1756226988527
+    modified: 1756226988527
+environments:
+  name: Base Environment
+  meta:
+    id: env_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1756226988526
+    modified: 1756226988526
+    isPrivate: false

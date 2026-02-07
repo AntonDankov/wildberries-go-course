@@ -1,0 +1,207 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Scratch Pad
+meta:
+  id: wrk_scratchpad
+  created: 1756226975695
+  modified: 1756226975695
+  description: ""
+collection:
+  - url: localhost:8080/analytics/3E
+    name: Get analytics
+    meta:
+      id: req_f1c1a9afcd344af8a813319abbe5efb5
+      created: 1756227001250
+      modified: 1766443878958
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001250
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters:
+      - name: start_date
+        value: 2025-12-22
+        description: ""
+        disabled: false
+      - name: end_date
+        value: 2026-01-03
+        description: ""
+        disabled: false
+      - name: type
+        value: user-agent
+        description: ""
+        disabled: false
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/shorten
+    name: Create
+    meta:
+      id: req_4a4513b35d484df8917bd9c0da26587e
+      created: 1764870875144
+      modified: 1766442717316
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001350
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "url": "https://shazoo.ru/"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/analytics/3E
+    name: Get analytics by user-agent
+    meta:
+      id: req_53e8fd85b9fd4647bc0fd51030974d48
+      created: 1766444426839
+      modified: 1766444426839
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001200
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters:
+      - name: start_date
+        value: 2025-12-22
+        description: ""
+        disabled: false
+      - name: end_date
+        value: 2026-01-03
+        description: ""
+        disabled: false
+      - name: type
+        value: user-agent
+        description: ""
+        disabled: false
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/analytics/3E
+    name: Get analytics by day
+    meta:
+      id: req_669578b6e0bd4ea4abdf87ace002dc8d
+      created: 1766444434863
+      modified: 1766444915719
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001225
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters:
+      - name: start_date
+        value: 2025-12-22
+        description: ""
+        disabled: false
+      - name: end_date
+        value: 2025-12-23
+        description: ""
+        disabled: false
+      - name: type
+        value: day
+        description: ""
+        disabled: false
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/analytics/3E
+    name: Get analytics by month
+    meta:
+      id: req_3c74cab7ea7f4e63b17d63f6206fc8d7
+      created: 1766444443322
+      modified: 1766444785734
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001212.5
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters:
+      - name: start_date
+        value: 2025-12
+        description: ""
+        disabled: false
+      - name: end_date
+        value: 2025-12
+        description: ""
+        disabled: false
+      - name: type
+        value: month
+        description: ""
+        disabled: false
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1756226988527
+    modified: 1756226988527
+environments:
+  name: Base Environment
+  meta:
+    id: env_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1756226988526
+    modified: 1756226988526
+    isPrivate: false

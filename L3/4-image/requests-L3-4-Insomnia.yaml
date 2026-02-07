@@ -1,0 +1,170 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Scratch Pad
+meta:
+  id: wrk_scratchpad
+  created: 1756226975695
+  modified: 1756226975695
+  description: ""
+collection:
+  - url: localhost:8080/image/b69587b622744685aaa98e96ac7de210
+    name: Get image
+    meta:
+      id: req_f1c1a9afcd344af8a813319abbe5efb5
+      created: 1756227001250
+      modified: 1768851760219
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001250
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters:
+      - name: maxDepth
+        value: "2"
+        description: ""
+        disabled: false
+      - name: page
+        value: "0"
+        description: ""
+        disabled: false
+      - name: pageSize
+        value: "1"
+        description: ""
+        disabled: false
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/upload
+    name: Upload image
+    meta:
+      id: req_4a4513b35d484df8917bd9c0da26587e
+      created: 1764870875144
+      modified: 1768851773287
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001350
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - name: image
+          value: ""
+          description: ""
+          disabled: false
+          fileName: F:\Art\Photoshop\Daily\Results\18-01-26-egg.png
+          type: file
+        - name: miniature
+          value: "true"
+          description: ""
+          disabled: true
+        - name: watermark
+          value: "true"
+          description: ""
+          disabled: true
+        - name: ""
+          value: ""
+          description: ""
+          disabled: false
+    headers:
+      - name: Content-Type
+        value: multipart/form-data
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/image
+    name: Get images status
+    meta:
+      id: req_669578b6e0bd4ea4abdf87ace002dc8d
+      created: 1766444434863
+      modified: 1768775720515
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001246.875
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters:
+      - name: start_date
+        value: 2025-12-22
+        description: ""
+        disabled: false
+      - name: end_date
+        value: 2025-12-23
+        description: ""
+        disabled: false
+      - name: type
+        value: day
+        description: ""
+        disabled: false
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/image/0f3857cceafe4553b7ee44f5bb1ce797
+    name: Delete image
+    meta:
+      id: req_63412fd5cbe54952bd72e2be58d98fb3
+      created: 1766691004797
+      modified: 1768851580551
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001243.75
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1756226988527
+    modified: 1756226988527
+environments:
+  name: Base Environment
+  meta:
+    id: env_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1756226988526
+    modified: 1756226988526
+    isPrivate: false

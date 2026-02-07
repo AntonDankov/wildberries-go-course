@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS image_process (
+    id VARCHAR(32) PRIMARY KEY,
+    extension VARCHAR(10) NOT NULL,
+    process_type INTEGER NOT NULL DEFAULT 0,
+    created TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated TIMESTAMP NOT NULL DEFAULT NOW()
+);
