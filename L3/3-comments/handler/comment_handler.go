@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
 	"wildberries-go-course/L3-3/database"
@@ -67,9 +68,61 @@ func GetCommentWithReplies(ctx context.Context, db *database.Database) gin.Handl
 			return
 		}
 
+		if len(comments) == 0 {
+			addJsonWithError(c, http.StatusNotFound, fmt.Errorf("not found any comments"))
+			return
+		}
+
+		var totalPages int64
+		if len(comments) > 0 && pageSize > 0 {
+			totalPages = int64(math.Ceil(float64(comments[0].AmountOfReplies) / float64(pageSize)))
+		}
+
 		c.JSON(http.StatusOK, gin.H{
-			"count":    len(comments),
-			"comments": comments,
+			"totalPages": totalPages,
+			"page":       page,
+			"pageSize":   pageSize,
+			"count":      len(comments),
+			"comments":   comments,
+		})
+	}
+}
+
+func GetTopicComments(ctx context.Context, db *database.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+		pageStr := c.Query("page")
+		page := -1
+		var e error
+		if len(pageStr) != 0 {
+			page, e = strconv.Atoi(pageStr)
+			err = errors.Join(err, e)
+		}
+		pageSizeStr := c.Query("pageSize")
+		pageSize := -1
+		if len(pageSizeStr) != 0 {
+			pageSize, e = strconv.Atoi(pageSizeStr)
+			err = errors.Join(err, e)
+		}
+		if err != nil {
+			addJsonWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		comments, totalCount, err := repository.GetTopicCommentWithPagination(ctx, db, page, pageSize)
+		if err != nil {
+			addJsonWithError(c, http.StatusInternalServerError, err)
+			return
+		}
+		var totalPages int64
+		if len(comments) > 0 && pageSize > 0 {
+			totalPages = int64(math.Ceil(float64(totalCount) / float64(pageSize)))
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"totalPages": totalPages,
+			"page":       page,
+			"pageSize":   pageSize,
+			"count":      len(comments),
+			"comments":   comments,
 		})
 	}
 }
@@ -112,14 +165,26 @@ func FindCommentsByText(ctx context.Context, db *database.Database) gin.HandlerF
 			err = errors.Join(err, e)
 		}
 
-		comments, err := repository.SearchInComments(ctx, db, searchText, page, pageSize)
+		if err != nil {
+			addJsonWithError(c, http.StatusBadRequest, err)
+			return
+		}
+
+		comments, totalCount, err := repository.SearchInComments(ctx, db, searchText, page, pageSize)
 		if err != nil {
 			addJsonWithError(c, http.StatusInternalServerError, err)
 			return
 		}
+		var totalPages int64
+		if len(comments) > 0 && pageSize > 0 {
+			totalPages = int64(math.Ceil(float64(totalCount) / float64(pageSize)))
+		}
 		c.JSON(http.StatusOK, gin.H{
-			"count":    len(comments),
-			"comments": comments,
+			"totalPages": totalPages,
+			"page":       page,
+			"pageSize":   pageSize,
+			"count":      len(comments),
+			"comments":   comments,
 		})
 	}
 }

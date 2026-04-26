@@ -23,7 +23,7 @@ func Authorize(ctx context.Context, db database.DBTX, c *ginext.Context, allowed
 	if err != nil {
 		return userClaims, err
 	}
-	isRoleAccepted := CheckRequiredRole(ctx, db, userClaims.UserID, allowedRoles)
+	isRoleAccepted := CheckRequiredRoleByUserClaims(userClaims, allowedRoles)
 	if !isRoleAccepted {
 		return userClaims, fmt.Errorf("no access for user role")
 	}
@@ -52,7 +52,10 @@ func GetUserClaims(authHeader string) (dto.UserClaimsDTO, error) {
 	return userClaims, nil
 }
 
-func CheckRequiredRole(ctx context.Context, db database.DBTX, userID int64, allowedRoles model.RoleType) bool {
+// I'm more preferring check important things like role through database,
+// because otherwise if account get stolen we can't stop it for now
+// then we should introduce some mechanisms to block account and it still might be another database request
+func CheckRequiredRoleByDatabase(ctx context.Context, db database.DBTX, userID int64, allowedRoles model.RoleType) bool {
 	user, err := repository.GetUserByID(ctx, db, userID)
 	if err != nil {
 		zlog.Logger.Fatal().Msgf("failed to get user role: %v", err)
@@ -60,4 +63,8 @@ func CheckRequiredRole(ctx context.Context, db database.DBTX, userID int64, allo
 	}
 
 	return (user.Role & allowedRoles) != 0
+}
+
+func CheckRequiredRoleByUserClaims(userClaims dto.UserClaimsDTO, allowedRoles model.RoleType) bool {
+	return (userClaims.Role & allowedRoles) != 0
 }

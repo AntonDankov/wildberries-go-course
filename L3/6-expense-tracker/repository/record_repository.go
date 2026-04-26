@@ -10,7 +10,7 @@ import (
 	"wildberries-go-course/L3-6/model"
 )
 
-func CreateRecord(ctx context.Context, db database.DBTX, record *model.Record) (int64, error) {
+func CreateRecord(ctx context.Context, db database.DBTX, record model.Record) (int64, error) {
 	query := `
 		INSERT INTO record (type, category, amount, date) 
 		VALUES ($1, $2, $3, $4)
@@ -26,7 +26,7 @@ func CreateRecord(ctx context.Context, db database.DBTX, record *model.Record) (
 	return recordID, nil
 }
 
-func GetRecord(ctx context.Context, db database.DBTX, recordID int64) (*model.Record, error) {
+func GetRecord(ctx context.Context, db database.DBTX, recordID int64) (model.Record, error) {
 	query := `
 		SELECT id, type, category, amount, date 
 		FROM record 
@@ -43,15 +43,15 @@ func GetRecord(ctx context.Context, db database.DBTX, recordID int64) (*model.Re
 	)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("record not found: %d", recordID)
+			return record, fmt.Errorf("record not found: %d", recordID)
 		}
-		return nil, fmt.Errorf("failed to get record: %v", err)
+		return record, fmt.Errorf("failed to get record: %v", err)
 	}
 
-	return &record, nil
+	return record, nil
 }
 
-func UpdateRecord(ctx context.Context, db database.DBTX, recordID int64, record *model.Record) error {
+func UpdateRecord(ctx context.Context, db database.DBTX, recordID int64, record model.Record) error {
 	query := `
 		UPDATE record 
 		SET type = $1, category = $2, amount = $3, date = $4 

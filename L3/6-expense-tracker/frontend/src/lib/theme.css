@@ -1,0 +1,23 @@
+
+:root {
+  --bg: #0f0f13;
+  --bg-card: #1a1a24;
+  --bg-card-hover: #14141e;
+  --bg-root: linear-gradient(135deg, #1a1a2e, #16162a);
+  --border: #2a2a38;
+  --border-deep: #3b3b58;
+  --text: #e8e8f0;
+  --text-muted: #6b7280;
+  --text-secondary: #9ca3af;
+  --text-body: #d1d5db;
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --accent-subtle: rgba(99, 102, 241, 0.1);
+  --error: #f87171;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 999px;
+  --font: 'Inter', system-ui, sans-serif;
+}

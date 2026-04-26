@@ -52,7 +52,6 @@ func GetAnalytics(ctx context.Context, db database.DBTX, filter *dto.AnalyticsFi
 		query += " WHERE " + strings.Join(conditions, " AND ")
 	}
 
-	// zlog.Logger.Debug().Msgf("analytics query: %s", query)
 	var analytics dto.Analytics
 	err := db.QueryRowContext(ctx, query, args...).Scan(
 		&analytics.Sum,

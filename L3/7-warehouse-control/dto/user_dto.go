@@ -9,7 +9,7 @@ import (
 type UserDTO struct {
 	Name     string         `json:"name" binding:"required,min=3"`
 	Password string         `json:"password" binding:"required,min=6"`
-	Role     model.RoleType `json:"role" binding:"required,min=1"`
+	Role     model.RoleType `json:"role"`
 }
 
 type UserClaimsDTO struct {

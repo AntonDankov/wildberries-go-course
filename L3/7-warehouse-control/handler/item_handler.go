@@ -135,7 +135,7 @@ func UpdateItem(ctx context.Context, db *database.Database) ginext.HandlerFunc {
 			return
 		}
 
-		if err := repository.UpdateItem(ctx, tx, itemID, itemFromRequest.Name, itemFromRequest.Price, itemFromRequest.Amount, userClaims.UserID); err != nil {
+		if err := repository.UpdateItem(ctx, tx, itemID, itemFromRequest.Name, itemFromRequest.Price, itemFromRequest.Amount, userClaims.UserID, userClaims.Role); err != nil {
 			addJSONWithError(c, http.StatusInternalServerError, fmt.Errorf("failed to update item: %w", err))
 			return
 		}

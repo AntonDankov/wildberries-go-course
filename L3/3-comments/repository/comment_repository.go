@@ -129,6 +129,54 @@ func GetCommentWithRepliesWithPaginationAndDepthLimit(ctx context.Context, db *d
 	return comments, nil
 }
 
+func GetTopicCommentWithPagination(ctx context.Context, db *database.Database, page int, pageSize int) ([]dto.CommentDTO, int64, error) {
+	query := `
+	WITH root_comment AS (
+			SELECT 
+				c.id, c.text, ct.depth,
+				-1 as parent_id,
+	(SELECT COUNT(*) FROM comment_closure_tree 
+		 WHERE parent_id = c.id AND depth = 1) as reply_count,
+			COUNT(*) OVER() as total_count
+			FROM comment c
+			JOIN comment_closure_tree ct ON c.id = ct.child_id
+			WHERE ct.depth = 0
+			ORDER BY c.id DESC
+			LIMIT CASE WHEN $1 = -1 THEN NULL ELSE $1 END
+			OFFSET CASE WHEN $2 = -1 THEN 0 ELSE $2 END
+			
+
+	)
+	SELECT * FROM root_comment 
+	`
+	offset := 0
+	if page != -1 && pageSize != -1 {
+		offset = page * pageSize
+	}
+
+	rows, err := db.Master.QueryContext(ctx, query, pageSize, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer rows.Close()
+
+	var comments []dto.CommentDTO
+	var totalCount int64
+	for rows.Next() {
+		var comment dto.CommentDTO
+		if err := rows.Scan(&comment.ID, &comment.Text, &comment.Depth, &comment.ParetID, &comment.AmountOfReplies, &totalCount); err != nil {
+			return nil, 0, err
+		}
+		comments = append(comments, comment)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, 0, err
+	}
+
+	return comments, totalCount, nil
+}
+
 func DeleteCommentWithReplies(ctx context.Context, db *database.Database, commentID int64) error {
 	query := `
 		DELETE FROM comment
@@ -141,9 +189,9 @@ func DeleteCommentWithReplies(ctx context.Context, db *database.Database, commen
 	return err
 }
 
-func SearchInComments(ctx context.Context, db *database.Database, searchText string, page int, pageSize int) ([]dto.CommentDTO, error) {
+func SearchInComments(ctx context.Context, db *database.Database, searchText string, page int, pageSize int) ([]dto.CommentDTO, int64, error) {
 	query := `
-			SELECT id, text FROM comment
+			SELECT id, text, COUNT(*) OVER() as total_count FROM comment
 			WHERE text_search @@ plainto_tsquery('simple', $1)
 			ORDER BY ts_rank(text_search, plainto_tsquery('simple', $1)) DESC
 			LIMIT CASE WHEN $2 = -1 THEN NULL ELSE $2 END
@@ -155,22 +203,23 @@ func SearchInComments(ctx context.Context, db *database.Database, searchText str
 	}
 	rows, err := db.Master.QueryContext(ctx, query, searchText, pageSize, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer rows.Close()
 
 	var comments []dto.CommentDTO
+	var totalCount int64
 	for rows.Next() {
 
 		var comment dto.CommentDTO
-		if err := rows.Scan(&comment.ID, &comment.Text); err != nil {
-			return nil, err
+		if err := rows.Scan(&comment.ID, &comment.Text, &totalCount); err != nil {
+			return nil, 0, err
 		}
 		comments = append(comments, comment)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	return comments, nil
+	return comments, totalCount, nil
 }

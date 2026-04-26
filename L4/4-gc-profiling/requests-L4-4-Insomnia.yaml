@@ -1,0 +1,77 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Scratch Pad
+meta:
+  id: wrk_scratchpad
+  created: 1756226975695
+  modified: 1756226975695
+  description: ""
+collection:
+  - url: localhost:8080/memory_metrics
+    name: Memory metrics
+    meta:
+      id: req_e37df567ffb44db8ad8bd445010566c4
+      created: 1756227001250
+      modified: 1776557634089
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001250
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/gc_percentage
+    name: Update garbage collector percentage
+    meta:
+      id: req_2ad751adba3b43f2ad9a69a26eec9007
+      created: 1764870875144
+      modified: 1776558337266
+      isPrivate: false
+      description: ""
+      sortKey: -1756227001225
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"percentage":25
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.5.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1756226988527
+    modified: 1756226988527
+environments:
+  name: Base Environment
+  meta:
+    id: env_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1756226988526
+    modified: 1756226988526
+    isPrivate: false
