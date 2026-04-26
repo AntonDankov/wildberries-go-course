@@ -1,12 +1,15 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type RecordType int
 
 const (
 	Expense RecordType = iota
 	Income
+	RecordTypeEnd
 )
 
 type RecordCategory int
@@ -16,6 +19,7 @@ const (
 	Food
 	Delivery
 	Taxes
+	RecordCategoryEnd
 )
 
 type Record struct {

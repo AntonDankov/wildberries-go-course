@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 	"wildberries-go-course/L3-7/database"
 	"wildberries-go-course/L3-7/model"
 )
@@ -100,14 +101,33 @@ func GetAllItems(ctx context.Context, db database.DBTX) ([]model.Item, error) {
 	return items, nil
 }
 
-func UpdateItem(ctx context.Context, db database.DBTX, itemID int64, name string, price float64, amount int, ownerID int64) error {
-	query := `
+func UpdateItem(ctx context.Context, db database.DBTX, itemID int64, name string, price float64, amount int, ownerID int64, role model.RoleType) error {
+	baseQuery := `
 		UPDATE items 
 		SET name = $1, price = $2, amount = $3, updated_at = NOW() 
-		WHERE id = $4 and owner_id = $5
 	`
 
-	result, err := db.ExecContext(ctx, query, name, price, amount, itemID, ownerID)
+	conditions := []string{}
+	args := []any{name, price, amount}
+	sqlArgIndex := 4
+	{
+		conditions = append(conditions, fmt.Sprintf("id = $%d", sqlArgIndex))
+		args = append(args, itemID)
+		sqlArgIndex++
+	}
+
+	if (role & (model.Admin | model.Manager)) == 0 {
+		conditions = append(conditions, fmt.Sprintf("owner_id = $%d", sqlArgIndex))
+		args = append(args, ownerID)
+		sqlArgIndex++
+	}
+
+	query := baseQuery
+	if len(conditions) > 0 {
+		query += " WHERE " + strings.Join(conditions, " AND ")
+	}
+
+	result, err := db.ExecContext(ctx, query, args...)
 	if err != nil {
 		return fmt.Errorf("failed to update item: %v", err)
 	}
@@ -146,8 +166,9 @@ func DeleteItem(ctx context.Context, db database.DBTX, itemID int64, userID int6
 
 func GetItemHistory(ctx context.Context, db database.DBTX, itemID int64) ([]model.ItemHistory, error) {
 	query := `
-		SELECT id, item_id, name, price, amount, action, changed_by, changed_at 
-		FROM item_history 
+		SELECT h.id, h.item_id, h.name, h.price, h.amount, h.action, h.changed_by, u.name, h.changed_at 
+		FROM item_history h
+		join users u on h.changed_by=u.id
 		WHERE item_id = $1 
 		ORDER BY changed_at DESC
 	`
@@ -168,7 +189,8 @@ func GetItemHistory(ctx context.Context, db database.DBTX, itemID int64) ([]mode
 			&h.Price,
 			&h.Amount,
 			&h.Action,
-			&h.ChangedByUserID,
+			&h.UserID,
+			&h.Username,
 			&h.ChangedAt,
 		)
 		if err != nil {

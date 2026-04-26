@@ -48,6 +48,40 @@ func GetEvent(ctx context.Context, db database.DBTX, eventID int64) (*model.Even
 	return &event, nil
 }
 
+func GetEvents(ctx context.Context, db database.DBTX) ([]model.Event, error) {
+	query := `
+		SELECT id, name, seats, book_second_max_time 
+		FROM event
+		ORDER by id DESC
+	`
+
+	rows, err := db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var events []model.Event
+
+	for rows.Next() {
+		var event model.Event
+		if err := rows.Scan(
+			&event.ID,
+			&event.Name,
+			&event.Seats,
+			&event.BookSecondMaxTime,
+		); err != nil {
+			return nil, err
+		}
+		events = append(events, event)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return events, nil
+}
+
 func GetEventBookedCount(ctx context.Context, db database.DBTX, eventID int64) (int, error) {
 	query := `
 		SELECT COUNT(*) 

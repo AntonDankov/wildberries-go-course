@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"strconv"
 	"strings"
@@ -32,7 +33,7 @@ func UploadImage(ctx context.Context, db *database.Database, imageStorage *stora
 
 		ext, err := imaging.FormatFromFilename(header.Filename)
 		if err != nil {
-			addJSONWithError(c, http.StatusBadRequest, fmt.Errorf("unsupported format: %s", ext))
+			addJSONWithError(c, http.StatusBadRequest, fmt.Errorf("unsupported format"))
 			return
 		}
 		imageData, err := io.ReadAll(file)
@@ -77,7 +78,6 @@ func UploadImage(ctx context.Context, db *database.Database, imageStorage *stora
 			addJSONWithError(c, http.StatusInternalServerError, fmt.Errorf("failed to store image processing to database: %w", err))
 			return
 		}
-		// change it to store in kafka
 		if err := imageStorage.StoreImage(image, imageData); err != nil {
 			addJSONWithError(c, http.StatusInternalServerError, fmt.Errorf("failed to store image: %w", err))
 			return
@@ -190,15 +190,23 @@ func GetImagesStatus(ctx context.Context, db *database.Database) gin.HandlerFunc
 			addJSONWithError(c, http.StatusBadRequest, err)
 			return
 		}
-		listImageProcess, err := repository.GetImagesStatusWithPagination(ctx, db, page, pageSize)
+		listImageProcess, totalCount, err := repository.GetImagesStatusWithPagination(ctx, db, page, pageSize)
 		if err != nil {
 			addJSONWithError(c, http.StatusInternalServerError, err)
 			return
 		}
 
+		var totalPages int64
+		if len(listImageProcess) > 0 && pageSize > 0 {
+			totalPages = int64(math.Ceil(float64(totalCount) / float64(pageSize)))
+		}
+
 		c.JSON(http.StatusOK, gin.H{
-			"count":    len(listImageProcess),
-			"comments": listImageProcess,
+			"totalPages": totalPages,
+			"page":       page,
+			"pageSize":   pageSize,
+			"count":      len(listImageProcess),
+			"comments":   listImageProcess,
 		})
 	}
 }

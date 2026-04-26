@@ -148,19 +148,21 @@ func GetEventBooks(ctx context.Context, db *database.Database) ginext.HandlerFun
 			return
 		}
 
-		response := make([]dto.BookDTO, len(books))
+		booksDTOs := make([]dto.BookDTO, len(books))
 		for i, book := range books {
-			response[i] = dto.BookDTO{
-				ID:      book.ID,
-				EventID: book.EventID,
-				Status:  book.Status,
+			booksDTOs[i] = dto.BookDTO{
+				ID:        book.ID,
+				EventID:   book.EventID,
+				Status:    book.Status,
+				CreatedAt: book.CreatedAt,
+				UpdatedAt: book.UpdatedAt,
 			}
 		}
 
 		c.JSON(http.StatusOK, ginext.H{
 			"event_id": eventID,
-			"books":    response,
-			"count":    len(response),
+			"books":    booksDTOs,
+			"count":    len(booksDTOs),
 		})
 	}
 }

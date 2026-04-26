@@ -6,6 +6,7 @@ import (
 	"wildberries-go-course/L3-6/database"
 	"wildberries-go-course/L3-6/handler"
 
+	"github.com/gin-contrib/cors"
 	"github.com/wb-go/wbf/ginext"
 	"github.com/wb-go/wbf/zlog"
 )
@@ -22,6 +23,12 @@ func main() {
 
 	// Web server setup
 	router := ginext.New("")
+
+	router.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"http://localhost:5173"},
+		AllowMethods: []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders: []string{"Content-Type", "Authorization"},
+	}))
 
 	ctx := context.Background()
 

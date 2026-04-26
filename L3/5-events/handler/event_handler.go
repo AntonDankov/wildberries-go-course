@@ -58,6 +58,21 @@ func GetEvent(ctx context.Context, db *database.Database) ginext.HandlerFunc {
 	}
 }
 
+func GetEvents(ctx context.Context, db *database.Database) ginext.HandlerFunc {
+	return func(c *ginext.Context) {
+		events, err := repository.GetEvents(ctx, db.Master)
+		if err != nil {
+			addJSONWithError(c, http.StatusInternalServerError, fmt.Errorf("failed to get event: %w", err))
+			return
+		}
+		eventsDTOs := dto.ConvertEventsToDTO(events)
+		c.JSON(http.StatusOK, ginext.H{
+			"count":  len(eventsDTOs),
+			"events": eventsDTOs,
+		})
+	}
+}
+
 func addJSONWithError(c *ginext.Context, httpCode int, err error) {
 	c.JSON(httpCode, ginext.H{
 		"error": err.Error(),

@@ -1,6 +1,9 @@
 package dto
 
-import "wildberries-go-course/L3-5/model"
+import (
+	"time"
+	"wildberries-go-course/L3-5/model"
+)
 
 type EventDTO struct {
 	ID                int64  `json:"id"`
@@ -18,8 +21,18 @@ func ConvertEventToDTO(event model.Event) EventDTO {
 	}
 }
 
+func ConvertEventsToDTO(events []model.Event) []EventDTO {
+	eventDTOs := make([]EventDTO, len(events))
+	for i, event := range events {
+		eventDTOs[i] = ConvertEventToDTO(event)
+	}
+	return eventDTOs
+}
+
 type BookDTO struct {
-	ID      int64            `json:"id"`
-	EventID int64            `json:"event_id"`
-	Status  model.BookStatus `json:"book_status"`
+	ID        int64            `json:"id"`
+	EventID   int64            `json:"event_id"`
+	Status    model.BookStatus `json:"book_status"`
+	CreatedAt time.Time        `json:"created_at"`
+	UpdatedAt time.Time        `json:"updated_at"`
 }

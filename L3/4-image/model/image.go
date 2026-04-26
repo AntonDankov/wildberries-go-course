@@ -45,7 +45,7 @@ const (
 
 // ImageStatus Stores in database
 type ImageStatus struct {
-	ID          string
-	Extension   string
-	ProcessType ImageProcessingType
+	ID          string              `json:"id"`
+	Extension   string              `json:"extension"`
+	ProcessType ImageProcessingType `json:"process_type"`
 }

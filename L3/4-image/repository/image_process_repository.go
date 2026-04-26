@@ -82,35 +82,38 @@ func UpdateImageProcess(ctx context.Context, db *database.Database, imageID stri
 	return nil
 }
 
-func GetImagesStatusWithPagination(ctx context.Context, db *database.Database, page int, pageSize int) ([]model.ImageStatus, error) {
+func GetImagesStatusWithPagination(ctx context.Context, db *database.Database, page int, pageSize int) ([]model.ImageStatus, int64, error) {
 	query := `
-		SELECT id, extension, process_type 
+		SELECT id, extension, process_type, COUNT(*) OVER() as total_count
 		FROM image_process 
-		LIMIT CASE WHEN $1 = -1 THEN NULL ELSE $1 END
-			OFFSET CASE WHEN $2 = -1 THEN 0 ELSE $2 END
+		WHERE process_type != $1
+	ORDER BY created DESC
+		LIMIT CASE WHEN $2 = -1 THEN NULL ELSE $2 END
+			OFFSET CASE WHEN $3 = -1 THEN 0 ELSE $3 END
 	`
 	offset := 0
 	if page != -1 && pageSize != -1 {
 		offset = page * pageSize
 	}
-	rows, err := db.Master.QueryContext(ctx, query, pageSize, offset)
+	rows, err := db.Master.QueryContext(ctx, query, model.Deleted, pageSize, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer rows.Close()
 
 	var listImageProcess []model.ImageStatus
+	var totalCount int64
 	for rows.Next() {
 		var imageProcess model.ImageStatus
-		if err := rows.Scan(&imageProcess.ID, &imageProcess.Extension, &imageProcess.ProcessType); err != nil {
-			return nil, err
+		if err := rows.Scan(&imageProcess.ID, &imageProcess.Extension, &imageProcess.ProcessType, &totalCount); err != nil {
+			return nil, 0, err
 		}
 		listImageProcess = append(listImageProcess, imageProcess)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	return listImageProcess, nil
+	return listImageProcess, totalCount, nil
 }

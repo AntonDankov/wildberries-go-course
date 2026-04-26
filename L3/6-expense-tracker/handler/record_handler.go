@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
 	"wildberries-go-course/L3-6/database"
 	"wildberries-go-course/L3-6/dto"
-	"wildberries-go-course/L3-6/model"
 	"wildberries-go-course/L3-6/repository"
 
 	"github.com/wb-go/wbf/ginext"
@@ -23,17 +21,10 @@ func CreateRecord(ctx context.Context, db *database.Database) ginext.HandlerFunc
 			return
 		}
 
-		date, err := time.Parse("2006-01-02", recordDTO.Date)
+		record, err := dto.ConvertRecordFromDTO(recordDTO)
 		if err != nil {
-			addJSONWithError(c, http.StatusBadRequest, fmt.Errorf("date format should be YYYY-MM-DD: %w", err))
+			addJSONWithError(c, http.StatusBadRequest, err)
 			return
-		}
-
-		record := &model.Record{
-			Type:     model.RecordType(recordDTO.Type),
-			Category: model.RecordCategory(recordDTO.Category),
-			Amount:   recordDTO.Amount,
-			Date:     date,
 		}
 
 		recordID, err := repository.CreateRecord(ctx, db.Master, record)
@@ -68,24 +59,11 @@ func UpdateRecord(ctx context.Context, db *database.Database) ginext.HandlerFunc
 			return
 		}
 
-		record, err := repository.GetRecord(ctx, db.Master, recordID)
+		record, err := dto.ConvertRecordFromDTO(recordDTO)
 		if err != nil {
-			addJSONWithError(c, http.StatusNotFound, fmt.Errorf("record not found: %w", err))
+			addJSONWithError(c, http.StatusBadRequest, err)
 			return
 		}
-
-		record.Type = model.RecordType(recordDTO.Type)
-
-		record.Category = model.RecordCategory(recordDTO.Category)
-
-		record.Amount = recordDTO.Amount
-
-		date, err := time.Parse("2006-01-02", recordDTO.Date)
-		if err != nil {
-			addJSONWithError(c, http.StatusBadRequest, fmt.Errorf("date format should be YYYY-MM-DD: %w", err))
-			return
-		}
-		record.Date = date
 
 		if err := repository.UpdateRecord(ctx, db.Master, recordID, record); err != nil {
 			addJSONWithError(c, http.StatusInternalServerError, fmt.Errorf("failed to update record: %w", err))
@@ -143,8 +121,8 @@ func GetRecords(ctx context.Context, db *database.Database) ginext.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, ginext.H{
-			"records": records,
-			"count":   len(records),
+			"records": recordDTOs,
+			"count":   len(recordDTOs),
 		})
 	}
 }
