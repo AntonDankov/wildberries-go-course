@@ -1,0 +1,23 @@
+# GO compilation artifacts
+**/*.exe
+**/*.exe~
+**/*.dll
+**/*.so
+**/*.dylib
+ 
+# temporary
+**/tmp/
+ 
+# Node / npm
+**/node_modules/
+ 
+# Svelte 
+**/.svelte-kit/
+**/build/
+**/dist/
+**/.vite/
+ 
+# Editors
+.idea/
+
+
