@@ -3,6 +3,7 @@ package cache
 import (
 	"bytes"
 	"fmt"
+	"hash/maphash"
 	"sync"
 	"wildberries-go-course/L0/model"
 )
@@ -45,7 +46,6 @@ func (cache *SyncLRUCache[T]) Put(key string, value T) {
 	node, exist := cache.hashMap[key]
 	if exist {
 		node.Value = value
-		// put also should update
 		cache.linkedList.MoveToTail(node)
 		return
 	} else {
@@ -141,4 +141,30 @@ type Node[T any] struct {
 	Value T
 	Next  *Node[T]
 	Prev  *Node[T]
+}
+
+type ShardedCache[T any] struct {
+	shards [16]SyncLRUCache[T]
+}
+
+func NewSharedCache[T any](size int) *ShardedCache[T] {
+	sharedCash := ShardedCache[T]{}
+	for i := 0; i < 16; i++ {
+		sharedCash.shards[i] = *NewSyncLRUCache[T](size)
+	}
+	return &sharedCash
+}
+
+var HashSeed = maphash.MakeSeed()
+
+func (s *ShardedCache[T]) Get(key string) (T, bool) {
+	hash := maphash.String(HashSeed, key)
+	shardIndex := hash & 15
+	return s.shards[shardIndex].Get(key)
+}
+
+func (s *ShardedCache[T]) Put(key string, value T) {
+	hash := maphash.String(HashSeed, key)
+	shardIndex := hash & 15
+	s.shards[shardIndex].Put(key, value)
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"hash/maphash"
 	"log"
 	"log/slog"
 	"net/http"
@@ -42,7 +43,8 @@ func main() {
 		log.Fatal("Filed to get orders for the cache", err)
 	}
 	for _, order := range orders {
-		cache.GlobalOrderCache.Put(order.OrderUID, order)
+		hashID := maphash.String(cache.HashSeed, order.OrderUID)
+		cache.GlobalShardedTreeCache.Put(hashID, &order)
 	}
 	var waitgroup sync.WaitGroup
 

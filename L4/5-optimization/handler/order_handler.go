@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"hash/maphash"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -29,14 +30,16 @@ func GetOrderByID(orderRep repository.OrderRepositoryInterface) http.HandlerFunc
 			return
 		}
 
-		order, exist := cache.GlobalOrderCache.Get(orderUUID)
-		if !exist {
-			order, err = orderRep.GetOrderByID(context.Background(), &orderUUID)
+		// order, exist := cache.GlobalOrderCache.Get(orderUUID)
+		hashID := maphash.String(cache.HashSeed, orderUUID)
+		order, exist := cache.GlobalShardedTreeCache.Get(hashID)
+		if !exist || order.OrderUID != orderUUID {
+			orderFromDB, err := orderRep.GetOrderByID(context.Background(), &orderUUID)
 			if err != nil {
 				http.Error(responseWriter, "Not Found", http.StatusNotFound)
 				return
 			}
-			cache.GlobalOrderCache.Put(orderUUID, order)
+			cache.GlobalShardedTreeCache.Put(hashID, &orderFromDB)
 		}
 
 		responseWriter.Header().Set("Content-Type", "application/json")
